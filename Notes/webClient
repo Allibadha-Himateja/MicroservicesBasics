@@ -1,0 +1,27 @@
+ The webclient is a better approach for communication between services
+
+ // as we already know the restTemplate is for synchronous communication which leads to blocking the main thread
+ // inside the synchronous rest controller which will potentially lead to the slow performance for the api
+
+ // the solution for the limitations for restTemplate we have webClient
+
+ WebClient is a non-blocking, reactive web client introduced as part of the Spring WebFlux framework.
+ It is built to support asynchronous and streaming scenarios,
+ making it ideal for applications requiring high concurrency and scalability.
+
+ 1. Reactive and Non-Blocking Applications
+  WebClient is the go-to choice when developing reactive applications.
+  Reactive programming is designed to handle a large number of concurrent requests efficiently by leveraging non-blocking I/O.
+  Use WebClient in the following cases:
+
+    Reactive APIs: If your application uses Reactor, RxJava, or other reactive frameworks, WebClient integrates seamlessly.
+    Event-Driven Architectures: Systems that rely on events, such as IoT platforms, benefit from the asynchronous capabilities of WebClient.
+
+ //dependency
+ <dependency>
+     <groupId>org.springframework</groupId>
+     <artifactId>spring-webflux</artifactId>
+     <version>7.0.2</version>
+ </dependency>
+
+ //

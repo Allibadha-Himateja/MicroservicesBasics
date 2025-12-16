@@ -1,0 +1,74 @@
+the communication between the microservices is made via
+restTemplate (Mainly Synchronous communications)
+
+-->the restTemplate is also similar to the jdbcTemplate which is jdbc lib provided by spring
+the restTemplate simplifies the process of making HTTP requests and handling responses.
+It abstracts away much of the boilerplate code typically associated with making HTTP calls,
+making it easier to interact with RESTful web services.
+
+// dependency:
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+// first step is create the restTemplate bean
+@Configuration
+public class AppConfig {
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+}
+
+//we can now use that bean for making the rest calls- GET,POST,PUT,DELETE
+//get requests=To perform a GET request, you can use the ///////getForObject or ///////getForEntity methods.
+Here’s an example:
+@Service
+public class RestTemplateService {
+    @Autowired
+    private RestTemplate restTemplate;
+    public String getPost(int id) {
+        String url = "https://jsonplaceholder.typicode.com/posts/" + id;
+        return restTemplate.getForObject(url, String.class);
+    }
+}
+
+//post requests=you can use the ///////postForObject or ///////postForEntity methods.
+Here’s how to send a JSON payload:
+@Autowired
+    private RestTemplate restTemplate;
+
+    public String createPost() {
+        String url = "https://jsonplaceholder.typicode.com/posts";
+
+        Map<String, String> request = new HashMap<>();
+        request.put("title", "foo");
+        request.put("body", "bar");
+        request.put("userId", "1");
+
+        return restTemplate.postForObject(url, request, String.class);
+    }
+
+// how we have implemented these in our applications is
+//inside the marks api we have returned a list of type marks
+@GetMapping("/list")
+    public ResponseEntity<List<Marks>> getAllMarks() {
+        List<Marks> marks = marksService.getAllMarks();
+        ResponseEntity<List<Marks>> marksList=new ResponseEntity<>(marks, HttpStatus.OK);
+        return marksList;
+    }
+
+// calling from the studentapi to marks api
+public void getMarksFromMarksAPI()
+    {
+        ResponseEntity<List<Marks>> entity = restTemplate.exchange("http://localhost:8081/marks/list", HttpMethod.GET,null,new ParameterizedTypeReference<List<Marks>>() {});
+        entity.getBody().stream().forEach(System.out::println);
+    }
+// here ive used the .exchange method which is alternative for getForObject and getForEntity
+// but we are trying to get the List<Marks>  but we cannot directly provide the List<Marks>.class as a exchange method paramenter
+// soo we have to create new ParameterizedTypeReference<List<Marks>>() {}
+You cannot use getForObject() or getForEntity() to directly fetch List<Marks> because they do not accept the ParameterizedTypeReference you used.
+This reference is the key to telling the underlying JSON deserializer (like Jackson) that it should treat the incoming JSON array as a list of Marks objects.
+
+// when we need to get a single entity we can able to use the getForObject or the getForEntity

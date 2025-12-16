@@ -1,0 +1,41 @@
+
+
+---> The introduction of microservices.
+ microservices is an architecture which is upgrade for the traditional monolithic architecture
+ Building small,self contained,ready to run applications can bring great flexability and added resilience to the code
+
+ in simple words microservice is a modern approach to software whereby application code is
+ delivered in small ,manageable pieces, which are independent to others
+
+ The problem of monolithic architecture which was stepping for microservices architecture is
+ the tight coupling of services in one sole server
+ challenges in scalability ,development speed, system resilience
+
+ ----> for the implementation of microservice we are going to implement three individual rest controller
+ which are running over different ports in the local system
+
+ the idea of microservices is to handle the business logic through multiple services called the microservices
+ in this case we have taken three  REST API's
+ ->SchoolAPI
+ ->StudentAPI
+ ->MarksAPI
+
+ the idea of communication in between these apis is done is two fundamental ways :=
+ 1) Synchronous communication via REST(restTemplate)
+ 2) Asynchronous communication via webClient(WebFlux)
+
+
+ /// for the communication between these apis
+ ->Schoolapi will call the StudentApi
+ ->Studentapi will call the marksapi
+
+ --> but for now we have to make the call from the studentapi to the marksapi and print the list of marks form the
+ marks api inside the student api console
+
+ FIRST WAY TO COMMUNICATE TO THE MARKSAPI from STUDENTAPI
+ -restTemplate ( included in the Httpclient dependency)
+ -RestTemplate is a synchronous client in Spring Boot used to perform HTTP requests,
+  simplifying the process of interacting with RESTful web services by abstracting boilerplate code
+  associated with HTTP communication.
+ -It is commonly used to consume external APIs and facilitates seamless integration with REST services by managing HTTP connections,
+ marshaling and unmarshaling data between HTTP requests/responses and Java objects, and handling exceptions.

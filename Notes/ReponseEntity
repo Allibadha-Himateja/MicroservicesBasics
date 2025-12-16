@@ -1,0 +1,40 @@
+// ResponseEntity<T> is a class in the Spring Framework that represents the entire HTTP response,
+providing you with complete control over all aspects of the response sent back to the client.
+
+this is a generic type of response which can hold any type
+
+
+A RESPONSEENTITY object explicitly contains three key components in http response
+1) Body (T) : The actual data payload of the response.
+like List<Marks>,Student
+2) Status Code : The HTTP status code indicating the outcome of the request.
+200 OK, 201 Created, 404 Not Found, 500 Internal Server Error.
+3) Headers : Metadata about the response.
+Context-Type: application/json, Cache-Control :no-cache ... other header attributes
+
+@GetMapping("/users/{id}")
+public ResponseEntity<User> getUser(@PathVariable Long id) {
+    Optional<User> user = userService.findById(id);
+    if (user.isPresent()) {
+        // Successful response: HTTP 200 OK with the User object in the body
+        return ResponseEntity.ok(user.get());
+    } else {
+        // Error response: HTTP 404 Not Found with no body
+        return ResponseEntity.notFound().build();
+    }
+}
+
+/// or we are actually using this ResponseEntity<T> like this
+@GetMapping("/list")
+    public ResponseEntity<List<Marks>> getAllMarks() {
+        List<Marks> marks = marksService.getAllMarks();
+        ResponseEntity<List<Marks>> marksList=new ResponseEntity<>(marks, HttpStatus.OK);
+        return marksList;
+    }
+
+// calling from the studentapi to marks api
+public void getMarksFromMarksAPI()
+    {
+        ResponseEntity<List<Marks>> entity = restTemplate.exchange("http://localhost:8081/marks/list", HttpMethod.GET,null,new ParameterizedTypeReference<List<Marks>>() {});
+        entity.getBody().stream().forEach(System.out::println);
+    }
