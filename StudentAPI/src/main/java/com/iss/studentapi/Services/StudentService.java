@@ -50,7 +50,7 @@ public class StudentService {
 
     public void getMarksFromMarksAPI()
     {
-        ResponseEntity<List<Marks>> entity = restTemplate.exchange("http://localhost:8081/marks/list", HttpMethod.GET,null,new ParameterizedTypeReference<List<Marks>>() {});
+        ResponseEntity<List<Marks>> entity = restTemplate.exchange("http://MARKS-API/marks/list", HttpMethod.GET,null,new ParameterizedTypeReference<List<Marks>>() {});
         entity.getBody().stream().forEach(System.out::println);
     }
 
