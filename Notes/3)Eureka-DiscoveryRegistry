@@ -1,0 +1,36 @@
+
+
+// the creation of Eureka Server
+
+//As Netflix transitioned to a microservices architecture,
+ they encountered challenges in enabling services to discover and communicate with each other dynamically.
+ Traditional methods, like hardcoding service locations or using static configurations,
+ proved inadequate in a cloud environment where services frequently scale up or down.
+
+//To address this, Netflix developed Eureka, a service registry that facilitates dynamic service discovery.
+
+// what do we mean by Service Registry and Discovery Clients
+// this is a Server whos responsibility is to provide the centralized configuration for all the microservices inside a
+// distributed cluster of microservices.
+
+// so the idea of using the eureka server is to register all the discovery client(these clients are nothing but
+individual microservices)
+ so coming to creating a EUREKA SERVER
+
+STEPS:
+1) create a new module inside the directory
+2) name that module with EurekaServer
+3) add the dependencies for the Eureka Server
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+    </dependency>
+4) we have to make eureka configurations in application.properties
+    # Eureka Server Configuration
+    server.port=8761
+
+    # Disable client-side behavior (crucial for the server)
+    eureka.client.register-with-eureka=false
+    eureka.client.fetch-registry=false
+5) and inside the SpringBootApplication file
+    we have to register this application with eureka

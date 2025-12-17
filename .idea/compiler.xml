@@ -8,7 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="EurekaServer" />
       </profile>
-      <profile name="Annotation profile for StudentAPI" enabled="true">
+      <profile name="Annotation profile for KafkaMessaging" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -16,14 +16,16 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar" />
         </processorPath>
         <module name="StudentAPI" />
-        <module name="MarksAPI" />
+        <module name="KafkaMessaging" />
         <module name="SchoolAPI" />
+        <module name="MarksAPI" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="EurekaServer" options="-parameters" />
+      <module name="KafkaMessaging" options="-parameters" />
       <module name="MarksAPI" options="-parameters" />
       <module name="SchoolAPI" options="-parameters" />
       <module name="StudentAPI" options="-parameters" />
