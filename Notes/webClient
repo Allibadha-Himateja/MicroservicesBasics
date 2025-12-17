@@ -17,6 +17,7 @@
     Reactive APIs: If your application uses Reactor, RxJava, or other reactive frameworks, WebClient integrates seamlessly.
     Event-Driven Architectures: Systems that rely on events, such as IoT platforms, benefit from the asynchronous capabilities of WebClient.
 
+ FIRST
  //dependency
  <dependency>
      <groupId>org.springframework</groupId>
@@ -24,4 +25,46 @@
      <version>7.0.2</version>
  </dependency>
 
- //
+ SECOND
+ // the application of this webClient can be used for both the synchronous and asynchronous programming
+ // the step after configuring the dependency we have to create the Bean for the webClient in order to use that
+
+    public WebClient.Builder webClient() {
+        return WebClient.builder().baseUrl("http://localhost:8081/marks");
+    }
+
+ THIRD
+ // the use of this webclient bean is directly inside the @Service which is StudentService
+ // calling the MarksAPI from the StudentAPI via webclient will be
+    Mono<ResponseEntity<List<Marks>>> marks=webClient.build().get().uri("/list")
+                    .retrieve()
+                    .toEntity(new ParameterizedTypeReference<List<Marks>>() {});
+
+            marks.subscribe(p->p.getBody().stream().forEach(System.out::println));
+
+ FOURTH
+ // we have to use the webClient.build().get().uri().retrieve()
+ // and for the type exchange we can use the .toEntity() method .bodyToMono() or bodyToFlux()
+ Mono<ResponseEntity<Person>> result = client.get()
+ 		.uri("/persons/{id}", id).accept(MediaType.APPLICATION_JSON)
+ 		.retrieve()
+ 		.toEntity(Person.class);
+ Mono<Person> result = client.get()
+ 		.uri("/persons/{id}", id).accept(MediaType.APPLICATION_JSON)
+ 		.retrieve()
+ 		.bodyToMono(Person.class);
+ To get a stream of decoded objects:
+ Flux<Quote> result = client.get()
+ 		.uri("/quotes").accept(MediaType.TEXT_EVENT_STREAM)
+ 		.retrieve()
+ 		.bodyToFlux(Quote.class);
+
+ /// UNDERSTANDING HOW THE WEBCLIENT IS ASYNCHRONOUS
+ // for the comparison of webClient with the restTemplate
+ // the restTemplate will be a One thread per Request manner
+ // whereas the webclient is all about EVENTLOOP
+
+ // NOTE: .block()
+ If you call .block() on a WebClient call, you are destroying its asynchronous nature.
+ You are forcing the thread to wait, effectively turning it back into a RestTemplate.
+ To get the true benefit, you should return the Mono or Flux all the way to your controller.
