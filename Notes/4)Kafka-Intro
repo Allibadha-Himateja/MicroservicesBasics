@@ -1,0 +1,61 @@
+source for theory:
+https://docs.confluent.io/kafka/introduction.html#brokers
+
+///  what is kafka
+Apache Kafka® is a distributed event streaming platform that is used for building
+real-time data pipelines and streaming applications. Kafka is designed to handle large volumes of data
+in a scalable and fault-tolerant manner, making it ideal for use cases such as real-time analytics, data ingestion, and event-driven architectures.
+
+kafka at its core is a distributed publish-subscribe messaging system.
+Data is written into kafka topics by the producers and consumed from those topics by the consumers
+(there is a difference in kafka queue and kafka topic)
+Kafka topics can be partitioned, enabling the parallel processing of data,
+and topics can be replicated across multiple brokers for fault tolerance.
+
+Events and Event streaming:
+
+event is a record that "something happened" in world or in your business
+example
+Event key: “Alice”
+Event value: “Trip requested at work location”
+Event timestamp: “Jun. 25, 2020 at 2:06 p.m.”
+
+An event streaming platform captures events
+in order and these streams of events are stored durably for processing, manipulation,
+and responding to in real time or to be retrieved later.
+
+ KAFKA TERMINOLOGY:
+
+ BROKERS: brokers refer to the server which are part of kafka storage
+ which will store the events streams. kafka will contain a cluster of brokers
+
+ PRODUCERS:
+ Producers are clients that write events to Kafka. The producer specifies the topics they will write to and
+ the producer controls how events are assigned to partitions within a topic.
+
+ CONSUMERS:
+ Consumers are clients that read events from Kafka.
+
+ TOPICS:
+ The Kafka cluster organizes and durably stores streams of events in categories called topics,
+ which are Kafka’s most fundamental unit of organization.
+ A topic is a log of events, similar to a folder in a filesystem, where events are the files in that folder.
+
+ (KAFKA QUEUES VS TOPICS)
+ in a topic, all subscribers receive a copy of each message, and messages are retained for a configurable duration, allowing consumers to replay data even after initial consumption.
+ In a queue, only one consumer receives each message, and the message is typically deleted after being consumed, making it unsuitable for replaying data.
+
+ TOPIC-PARTITIONS:
+ Topics are broken up into partitions,
+ meaning a single topic log is broken into multiple logs located on different Kafka brokers
+ This way, the work of storing messages, writing new messages, and processing existing messages can be split among many nodes in the cluster.
+
+ WHEN A EVENT IS PUBLISHED BY THE PRODUCER ON BASIS OF TOPIC
+ IT WILL BE APPENDED TO ONE OF THE TOPIC'S PARTITIONS
+ Events with the same event key such as the same customer identifier or vehicle ID are written to the same partition.
+
+ TOPIC-REPLICATION:
+ Replication is an important part of keeping your data highly-available and fault tolerant.
+ Every topic can be replicated, even across geo-regions or datacenters.
+ This means that there are always multiple brokers that have a copy of the data just in case things go wrong,
+ you want to do maintenance on the brokers, and more.
