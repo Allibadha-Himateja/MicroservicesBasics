@@ -1,0 +1,58 @@
+//// Integrate Apache Kafka with a Spring Boot application to send and receive messages.
+we'll walk through the steps of setting up Kafka, adding dependencies, and implementing a producer and consumer.
+
+steps or prerequisites:
+1) first step for setting up the kafka is
+    download and install the kafka in your system
+    --> i have downloaded the
+        4.1.1
+        Released November 12, 2025
+        Release Notes
+        Docker image: apache/kafka:4.1.1.
+        Docker Native image: apache/kafka-native:4.1.1.
+        Source download: kafka-4.1.1-src.tgz (asc, sha512)
+        Binary download: kafka_2.13-4.1.1.tgz (asc, sha512)
+
+        this binary download and extracted the .tgz to c:\kafka
+    --> after downloading we need to extract that binary folder into c:\kafka using winrar
+    ---> we have to make some keyy difference in kafka
+    ---> for kafka version 3> we have zookeeper configuration external
+    ---> but for the kafka version 3+ we dont need the zookeeper configuration
+
+
+    ===> BUT WE MUST VERIFY SOME CONFIGURATION INSIDE THE SERVER.PROPERTIES
+         Check the server.properties file shown in your screenshot (at the bottom of the list).
+         In Kafka 4.x, this file typically contains the KRaft-specific settings like process.roles, node.id, and controller.quorum.voters by default.
+         Open C:\kafka\kafka_2.13-4.1.1\config\server.properties in a text editor.
+
+         Ensure it contains these KRaft settings:
+         process.roles=broker,controller
+         node.id=1
+         controller.quorum.voters=1@localhost:9093
+
+         Crucial for Windows: Change the log directory to a Windows path:
+         Find: log.dirs=/tmp/kafka-logs
+         Change to: log.dirs=C:/kafka/data/kafka-logs (use forward slashes /).
+
+         WE HAVE TO MANUALLY CREATE A NEW FOLDER INSIDE THE C:\KAFKA WHICH IS DATA BEFORE ADDING THE ABOVE CONFIGURATION
+         FOR LOGGING
+2) after setting and configuring the kafka server
+    we have to go to cmd and run the below commands
+    >>>>>C:\kafka\kafka_2.13-4.1.1>.\bin\windows\kafka-storage.bat random-uuid (( CRUCIAL FOR SETUP TO WORK))
+    2025-12-17T12:35:55.688555Z main ERROR Reconfiguration failed: No configuration found for '764c12b6' at 'null' in 'null'
+    Sw36lFZ-SYiNQN3g2jlrfA
+
+    ?????C:\kafka\kafka_2.13-4.1.1>.\bin\windows\kafka-storage.bat format -t Sw36lFZ-SYiNQN3g2jlrfA -c .\config\server.properties
+    2025-12-17T12:36:58.236364700Z main ERROR Reconfiguration failed: No configuration found for '764c12b6' at 'null' in 'null'
+    Because controller.quorum.voters is not set on this controller, you must specify one of the following: --standalone, --initial-controllers, or --no-initial-controllers.
+
+    >>>>>C:\kafka\kafka_2.13-4.1.1>.\bin\windows\kafka-storage.bat format --standalone -t Sw36lFZ-SYiNQN3g2jlrfA -c .\config\server.properties
+    2025-12-17T12:37:44.320717200Z main ERROR Reconfiguration failed: No configuration found for '764c12b6' at 'null' in 'null'
+    Formatting dynamic metadata voter directory C:/kafka/data/kraft-combined-logs with metadata.version 4.1-IV1.
+
+    C:\kafka\kafka_2.13-4.1.1>.\bin\windows\kafka-server-start.bat .\config\server.properties
+
+    // THIS LAST CMD IS FOR RUNNING THE KAFKA SERVER IN YOUR LOCAL SYSTEM
+       and at that path only.....
+       this particular kafka server will be running in the http://localhost:9092
+
