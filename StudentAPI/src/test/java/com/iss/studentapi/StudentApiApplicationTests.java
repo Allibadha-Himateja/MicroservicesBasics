@@ -19,7 +19,14 @@ class StudentApiApplicationTests {
 
     @Test
     void getAllMarks() {
-        studentService.getMarksbyIdFromMarksAPI();
+
+        studentService.getMarksFromMarksAPI();// this is the restTemplate call
+
+        studentService.getMarksbyIdFromMarksAPI(); // this is the webClient call
+
+        // each of these calls are made from the service class but we have to make sure
+        // that we dont forget about how we have configured this restTemplate and the webClient Beans
+
     }
 
 }

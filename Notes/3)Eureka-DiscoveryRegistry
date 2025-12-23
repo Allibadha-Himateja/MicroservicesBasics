@@ -34,3 +34,133 @@ STEPS:
     eureka.client.fetch-registry=false
 5) and inside the SpringBootApplication file
     we have to register this application with eureka
+    WITH
+    @EnableEurekaServer annotation
+
+    we have to run this application in order to list the view
+    -> Eureka dashboard at http://localhost:8761
+    -> this will display the Spring Eureka dashboard
+
+   ///////// THIS WAS ALL ABOUT HOW WE SETUP THE EUREKA SERVER
+
+/// HOW DO WE REGISTER THE MICROSERVICES WITH EUREKA CLIENT
+
+STEPS:
+1) for the existing Microservice we have to add a new dependency
+2) <dependency>
+       <groupId>org.springframework.cloud</groupId>
+       <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+   </dependency>
+
+   this is different from the eureka server dependency this dependency is for registering the microservice
+   as a client
+3) as we want to register this microservice at the Eureka server which is hosted at
+   http://localhost:8761
+
+   we have to configure the server url in the application.properties
+
+   // this is important to maintain each microservice with unique port
+   server.port=8081
+   eureka.client.service-url.defaultZone=http://localhost:8761/eureka/
+   // this is the property which makes the services registered to the eureka server
+
+4) we have to set the MarksAPI application with
+   @EnableDiscoveryClient annotation which is crucial for making this work
+
+5) once you have configured the application.properties and also the MainApplication of microservice
+   we have to run the
+   EUREKA SERVER first
+   then we have to run the MICROSERVICES NEXT
+
+ by that we can able to see that we have microservice which is registered to the eureka server
+ ====> inside the Instances currently registered with Eureka
+
+
+ ///////// HOW DO WE UTILIZE THE SERVICE REGISTRY WITH EUREKA
+
+ ---->> the main application of eureka server is to main the Serve discovery mechanism which is implemented in the
+ following steps
+
+   THIS EUREKA SERVICE DISCOVERY IS MAINLY INVOLVED WITH THE USAGE OF microserives communication types
+   ->restTemplate
+   ->webClient
+   ->FeignClient
+
+   /// for the comprehension of the restTemplate and the webClient we have create the service
+   ->StudentAPI
+   ->MarksAPI
+
+   we are calling the marks api from the student api
+
+   --> fetch the marks from the student via restTemplate
+        ResponseEntity<List<Marks>> entity = restTemplate.exchange("http://localhost:8081/marks/list",
+                                                                    HttpMethod.GET,
+                                                                    null,
+                                                                    new ParameterizedTypeReference<List<Marks>>() {});
+        entity.getBody().stream().forEach(System.out::println);
+
+   ---> here we are traditionally using the url for the marks api
+        but when we are considering the eureka as a service discovery server
+        with which we have registered all our microservices with will be handling the url issues for you
+
+        so this particular example will be done by using the
+        http://MARKS-API/marks/list
+
+        spring.application.name=Marks-API
+        by the name of the spring application which we have created the MarksAPI for the microservice
+
+   ---> similarly for all the client which we have registered we can directly able to communicate through
+        the service name instead of actual urls
+
+        for the  better understanding of how the flow of calls happens with eureka service discovery
+        please go to the StudentApiApplicationTests
+        and run the application tests for the verification
+
+        /// there we have two methods calls which are by restTemplate and the webclient
+        /// each of these calls need different configuration please check those configurations in the
+        /// StudentApiApplication
+
+/////////////  SOME IMPORTANT CONCEPTS IN EUREKA WHICH IVE MISSED
+
+1) when we try to communicate btw the api with eureka self discovery it will give you
+    org.springframework.web.client.ResourceAccessException:
+    I/O error on GET request for "http://MARKS-API/marks/list":
+    MARKS-API; nested exception is java.net.UnknownHostException: MARKS-API
+
+    this is very curical and redundent exception in eureka service discovery implementation so we need an
+    extra layer of configuration which is
+    @Bean
+    @LoadBalanced/// crucial
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @Bean
+    @LoadBalanced /// crucial for calling for the service-Id call
+    public WebClient.Builder webClient() {
+        return WebClient.builder().baseUrl("http://MARKS-API");
+    }
+
+2) Heartbeats (Lease Renewal)
+   Every Eureka Client sends a heartbeat to Eureka Server
+   Default: every 30 seconds
+   If Eureka doesn’t receive heartbeats → service is marked DOWN
+
+   which are made via configuration in application.properties
+   eureka.instance.lease-renewal-interval-in-seconds=30
+   eureka.instance.lease-expiration-duration-in-seconds=90
+
+
+3) Self-Preservation Mode
+    If many services suddenly stop sending heartbeats
+    Eureka assumes network issue, not mass failure
+    It does NOT deregister services
+
+    eureka.server.enable-self-preservation=true
+
+
+////////////////////// THIS IS THE END OF EUREKA SERVER
+
+THE COMPETITION FOR THE EUREKA SELF DISCOVERY SERVER IS THE KUBERNETES (k8's)
+
+/// next this is kubernetes(k8's) which is much advance than eureka
