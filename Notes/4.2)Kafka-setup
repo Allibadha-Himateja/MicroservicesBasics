@@ -56,3 +56,26 @@ steps or prerequisites:
        and at that path only.....
        this particular kafka server will be running in the http://localhost:9092
 
+
+
+    // for the ACTUAL SPRINGBOOT INTEGRATION we need the following dependencies
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-kafka</artifactId>
+    </dependency>
+
+    by this we can able to publish and subscribe to events via kafka
+
+    //// CRUCIAL FOR KAFKA
+         WE ALSO NEED THE
+         <!--         WE NEED THE JACKSON DATA BIND JAR FOR MAKING THE SERIALIZATION AND DESERIALIZATION ACTUALLY WORK-->
+         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+         <dependency>
+             <groupId>com.fasterxml.jackson.core</groupId>
+             <artifactId>jackson-databind</artifactId>
+             <version>2.20.1</version>
+         </dependency>
+
+     THIS IS ACTUALLY NOT PROVIDED IN THE INTELLIJ ULTIMATE DEPENDENCIES FOR MODULE MAVEN
+
+     // SO GO TO THE ACTUAL MAVEN REPOSITORY AND COPY THIS DEPENDENCY FROM THERE

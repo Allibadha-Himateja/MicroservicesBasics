@@ -59,3 +59,15 @@ and responding to in real time or to be retrieved later.
  Every topic can be replicated, even across geo-regions or datacenters.
  This means that there are always multiple brokers that have a copy of the data just in case things go wrong,
  you want to do maintenance on the brokers, and more.
+
+
+ ///  HOW DOES KAFKA ACTUALLY ABLE TO TRANSFER THE ACTUAL EVENTS
+        FOR THAT THE KAFKA USES THE
+        CONCEPT OF
+        serialization and deserialization
+
+        SO WE HAVE TO PRODUCE THE SERIALIZED MESSAGE FORM THE PRODUCER
+        AND WE ALSO NEED TO DESERIALIZE THE MESSAGE FROM THE CONSUMER......
+
+        UNDERSTAND IT THE HARD WAY....
+

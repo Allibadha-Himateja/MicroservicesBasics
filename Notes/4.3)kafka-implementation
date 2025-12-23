@@ -1,0 +1,110 @@
+///
+
+as we understood the basic components:
+producer
+consumer
+
+for the starters we have to create a single module for now that will contain
+-> Controller
+-> Service classes
+    ->Producer service
+    ->consumer service
+-> Models
+    -> product
+
+taking the Kafka-Messaging module as the base for this implementation
+we will proceed with how the flow of events occur
+-> we will be calling the api endpoint with via postman
+-> The controller will be called and uses the services
+-> we have two services Producer Service and Consumer Service
+-> we have
+          Producer Service which acts as a producer in the kafka messaging
+          this producer
+          WE CREATE THE PRODUCER METHOD INSIDE THE producerService
+
+          //key and value(topic and message)
+          @Autowired
+          private KafkaTemplate<String, Product> kafkaTemplate;
+
+          public void sendMessage(String topic, String message) {
+              kafkaTemplate.send(topic, message);
+          }
+
+          public void sendProduct(String topic,Product product)
+          {
+              kafkaTemplate.send(topic,product);
+          }
+
+    // we need the KafkaTemplate<String,String> or the KafkaTemplate<String,Product>
+    // in order to actually publish the messages to the kafka server
+    // so we have to configure some properties inside the application.properties
+
+///////// APPLICATION.PROPERTIES
+server.port=11111
+# Kafka bootstrap server
+spring.kafka.bootstrap-servers=localhost:9092
+spring.kafka.consumer.group-id=iss-group
+#Producer
+spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
+spring.kafka.producer.value-serializer=org.springframework.kafka.support.serializer.JsonSerializer
+#Consumer
+spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
+spring.kafka.consumer.value-deserializer=org.springframework.kafka.support.serializer.JsonDeserializer
+
+# this is crucial for serialization and deserialization of product
+spring.kafka.consumer.properties[spring.json.trusted.packages]=*
+
+
+the underlying behaviour of the above properties
+->kafka properties:- which include the server url and other is about consumer-group
+           spring.kafka.bootstrap-servers=localhost:9092
+           spring.kafka.consumer.group-id=iss-group
+
+
+->Producer properties:- the producer properties will be including the actual serialization and deserializing properties
+        that are the key and value serialization
+        org.apache.kafka.common.serialization.StringSerializer  FOR THE STRING VALUES
+        org.springframework.kafka.support.serializer.JsonSerializer  FOR OBJECT TYPES
+
+->Consumer properties:- for the consumer properties we need to have deserialization properties
+        ///ly
+        org.apache.kafka.common.serialization.StringDeserializer for the string types
+        org.springframework.kafka.support.serializer.JsonDeserializer for object types...
+
+-> Exceptions related properties:-
+        # this is crucial for serialization and deserialization of product
+        spring.kafka.consumer.properties[spring.json.trusted.packages]=*
+
+        without this we cannot be able to serialize or either deserialize the Object(Product) types.....
+
+////// NOTE: I WILL SUGGEST THAT WE WILL MANAGE THE PRODUCER CALLS FROM THE PRODUCER SERVICE AND
+             THE CONSUMER METHODS IN THE @Configuration classes
+             because it is easy to handle the KafkaListeners inside the configuration class
+
+
+
+////// COMING TO THE CONSUMER SERVICE WHICH IS RESPONSIBLE FOR RECEIVING THE INCOMING PRODUCER EVENTS
+        THIS WILL BE DONE VIA ANNOTATION
+
+        @KafkaListener(topics="Chat")
+        public void receiveProduct(Product product)
+
+        THIS IS ALL WE NEED TO COMPLETE THE CONSUMER
+        here we have a method with the annotation and the function parameters are very important and are/
+        used to catch the contents of the Producers events
+
+        /// the process of deserialization will be done internally byy spring and kafka
+        // for now we only have to focus on what we need to share from the producer to consumer
+
+        // REMEMBER THE KAFKA IS COMPLETELY USED FOR MESSAGING
+        // we dont have to manage the dto for kafka
+
+/////// BY RUNNING THIS APPLICATION :-
+        we must call the controller action
+        which will call the producer service
+        that producer service will publish the event using the topic and the Value Type
+
+        public void receiveProduct(Product product) || public void recieveMessage(String Message)
+
+
+
