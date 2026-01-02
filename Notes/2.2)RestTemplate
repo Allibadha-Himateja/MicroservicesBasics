@@ -16,6 +16,10 @@ making it easier to interact with RESTful web services.
 @Configuration
 public class AppConfig {
     @Bean
+
+    /////// IMPORTANT NOTE THAT WHEN HAVE A REGISTRY LIKE EUREKA THERE IS A MANDATORY TO USE THE
+    @LoadBalanced annotation without that we will get the illegalState Exception
+    // we dont have to use this annotation when we are running the services on localhost
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
